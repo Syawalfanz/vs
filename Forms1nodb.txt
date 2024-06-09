@@ -1,0 +1,30 @@
+Public Class Form1
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefToolStripMenuItem.Click
+        MessageBox.Show("This is created by Syawal")
+    End Sub
+    Private Sub btnCalculate_Click(sender As Object, e As EventArgs) Handles btnCalculate.Click
+        Try
+            Dim name As String
+            name = UCase(txtName.Text)
+            Dim gender As String
+            gender = cbCourse.Text
+            Dim phone As String
+            phone = txtPhonenum.Text
+            Dim course As String
+            course = cbCourse.Text
+            Dim semester As String
+            semester = txtSemester.Text
+            Dim fee As String
+            fee = txtFee.Text
+            Dim total As String
+            total = txtFee.Text * txtSemester.Text
+            txtShow.Text = "Name : " + name.ToString + vbNewLine + "Gender : " + gender.ToString + vbNewLine + "Phone : " + phone.ToString + vbNewLine + "Course : " + course.ToString + vbNewLine +
+            "Semester : " + semester.ToString + vbNewLine + "Fee : RM" + total.ToString
+        Catch ex As Exception
+        End Try
+        MsgBox("Thank you.")
+    End Sub
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnCalculate.Click
+        Me.Close()
+    End Sub
+End Class
