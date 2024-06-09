@@ -1,0 +1,96 @@
+Imports System.Data.OleDb
+
+Public Class Form1
+    ' Connection string to connect to Access database
+    Private connectionString As String = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\sfanz\OneDrive\Desktop\Databasevb\StudentDB.accdb;"
+
+    ' Form Load event to initialize components
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Optional: Initialize components or data
+    End Sub
+
+    ' Event handler for the About menu item
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefToolStripMenuItem.Click
+        MessageBox.Show("This is created by Syawal")
+    End Sub
+
+    ' Event handler for the Calculate button
+    Private Sub btnCalculate_Click(sender As Object, e As EventArgs) Handles btnCalculate.Click
+        Try
+            ' Retrieve form data
+            Dim name As String = UCase(txtName.Text)
+            Dim gender As String = cbGender.Text
+            Dim phone As String = txtPhonenum.Text
+            Dim course As String = cbCourse.Text
+            Dim semester As Integer = Integer.Parse(txtSemester.Text)
+            Dim fee As Decimal = Decimal.Parse(txtFee.Text)
+            Dim total As Decimal = fee * semester
+
+            ' Display data in a multiline TextBox
+            txtShow.Text = $"Name : {name}{vbNewLine}Gender : {gender}{vbNewLine}Phone : {phone}{vbNewLine}Course : {course}{vbNewLine}Semester : {semester}{vbNewLine}Fee : RM{total}"
+        Catch ex As Exception
+            MessageBox.Show("An error occurred: " & ex.Message)
+        End Try
+        MsgBox("Thank you.")
+    End Sub
+
+    ' Event handler for the Insert button
+    Private Sub btnInsert_Click(sender As Object, e As EventArgs) Handles btnInsert.Click
+        Try
+            ' Retrieve form data
+            Dim name As String = UCase(txtName.Text)
+            Dim gender As String = cbGender.Text
+            Dim phone As String = txtPhonenum.Text
+            Dim course As String = cbCourse.Text
+            Dim semester As Integer = Integer.Parse(txtSemester.Text)
+            Dim fee As Decimal = Decimal.Parse(txtFee.Text)
+
+            ' Insert data into the database
+            Using connection As New OleDbConnection(connectionString)
+                connection.Open()
+                Dim query As String = "INSERT INTO Table1 (Name, Gender, Phone, Course, Semester, Fee) VALUES (?, ?, ?, ?, ?, ?)"
+                Using command As New OleDbCommand(query, connection)
+                    command.Parameters.AddWithValue("@Name", name)
+                    command.Parameters.AddWithValue("@Gender", gender)
+                    command.Parameters.AddWithValue("@Phone", phone)
+                    command.Parameters.AddWithValue("@Course", course)
+                    command.Parameters.AddWithValue("@Semester", semester)
+                    command.Parameters.AddWithValue("@Fee", fee)
+                    command.ExecuteNonQuery()
+                End Using
+            End Using
+
+            MessageBox.Show("Data inserted successfully.")
+        Catch ex As Exception
+            MessageBox.Show("An error occurred: " & ex.Message)
+        End Try
+    End Sub
+
+    ' Event handler for the Close button
+    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+        Me.Close()
+    End Sub
+
+    ' Method to load data from the database into a DataTable
+    Private Function LoadData() As DataTable
+        Dim dataTable As New DataTable()
+        Try
+            Using connection As New OleDbConnection(connectionString)
+                connection.Open()
+                Dim query As String = "SELECT * FROM Table1"
+                Dim adapter As New OleDbDataAdapter(query, connection)
+                adapter.Fill(dataTable)
+            End Using
+        Catch ex As Exception
+            MessageBox.Show("An error occurred: " & ex.Message)
+        End Try
+        Return dataTable
+    End Function
+
+    ' Event handler to open Form2 and display the data in DataGridView
+    Private Sub btnShowData_Click(sender As Object, e As EventArgs) Handles btnShowdata.Click
+        Dim form2 As New Form2()
+        form2.SetData(LoadData())
+        form2.Show()
+    End Sub
+End Class

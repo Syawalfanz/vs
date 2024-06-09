@@ -1,0 +1,6 @@
+Public Class Form2
+    ' Method to set data in the DataGridView
+    Public Sub SetData(dataTable As DataTable)
+        DataGridView1.DataSource = dataTable
+    End Sub
+End Class
